@@ -4,31 +4,31 @@ const cardTemplate = document.querySelector('#card-template').content;
 
 // @todo: DOM узлы
 
-const container = document.querySelector('.places');
-const containerList = container.querySelector('.places__list');
+const containerList = document.querySelector('.places__list');
 
 // @todo: Функция создания карточки
-const createCard = (name, link, deleteCard) => {
+
+const createCard = (cardData, deleteCard) => {
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
 	const resetButton = cardElement.querySelector('.card__delete-button');
 
-	cardElement.querySelector('.card__image').src = link;
-	cardElement.querySelector('.card__title').textContent = name;
+	cardElement.querySelector('.card__image').src = cardData.link;
+	cardElement.querySelector('.card__image').alt = cardData.name;
+	cardElement.querySelector('.card__title').textContent = cardData.name;
 
-	resetButton.addEventListener('click', deleteCard);
+	resetButton.addEventListener('click', () => deleteCard(cardElement));
 
 	return cardElement;
 }
 
 // @todo: Функция удаления карточки
 
-const deleteCard = (event) => {
-	const delCard = event.target.closest('.card');
-	delCard.remove();
+const deleteCard = (cardElement) => {
+	cardElement.remove();
 }
 
 // @todo: Вывести карточки на страницу
-initialCards.forEach((item) => {
-	cardElement = createCard(item.name, item.link, deleteCard);
-	containerList.append(cardElement);
+initialCards.forEach((cardData) => {
+	const cardsElement = createCard(cardData, deleteCard);
+	containerList.append(cardsElement);
 })
