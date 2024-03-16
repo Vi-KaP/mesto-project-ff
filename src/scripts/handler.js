@@ -1,5 +1,5 @@
 import { createCard, deleteCard, putLike } from './card'
-import { closeModal } from './modal'
+import { closeModal, openModal } from './modal'
 import { containerList, popupNewCard, popupEdit } from '../index.js'
 
 const cardForm = document.forms['new-place']
@@ -12,7 +12,7 @@ const profileName = document.querySelector('.profile__title')
 const profileJob = document.querySelector('.profile__description')
 
 // Добавить карточку
-const addCardForme = evt => {
+const handleAddCardForm = evt => {
 	evt.preventDefault()
 
 	const valueNameCard = nameCardInput.value
@@ -24,7 +24,8 @@ const addCardForme = evt => {
 			link: valueLinkCard,
 		},
 		deleteCard,
-		putLike
+		putLike,
+		openModal
 	)
 
 	containerList.prepend(addCard)
@@ -34,7 +35,7 @@ const addCardForme = evt => {
 }
 
 const addCardFormeSubmit = () => {
-	cardForm.addEventListener('submit', addCardForme)
+	cardForm.addEventListener('submit', handleAddCardForm)
 }
 
 // Обработчик «отправки» формы
@@ -55,9 +56,9 @@ const editFormSubmit = () => {
 }
 
 // Мод.окно ред.профиля отображение текста
-const profilePopupEdit = () => {
+const fillProfilePopupEdit = () => {
 	nameInput.value = profileName.textContent
 	jobInput.value = profileJob.textContent
 }
 
-export { addCardFormeSubmit, editFormSubmit, profilePopupEdit }
+export { addCardFormeSubmit, editFormSubmit, fillProfilePopupEdit }

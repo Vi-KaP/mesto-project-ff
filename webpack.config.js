@@ -49,7 +49,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin(),
 
-  ]
+  ],
 
-  // devtool: 'source-map'
+  devtool: 'source-map'
 }

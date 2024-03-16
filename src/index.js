@@ -1,11 +1,11 @@
 import './pages/index.css'
 import { initialCards } from './scripts/cards.js'
-import { openModal, closeModal } from './scripts/modal.js'
+import { openModal } from './scripts/modal.js'
 import { createCard, deleteCard, putLike } from './scripts/card.js'
 import {
 	addCardFormeSubmit,
 	editFormSubmit,
-	profilePopupEdit,
+	fillProfilePopupEdit,
 } from './scripts/handler.js'
 
 // @todo: DOM узлы
@@ -22,19 +22,17 @@ const btnOpenNewCard = document.querySelector('.profile__add-button')
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach(cardData => {
-	const cards = createCard(cardData, deleteCard, putLike)
+	const cards = createCard(cardData, deleteCard, putLike, openModal)
 	containerList.append(cards)
 })
 // Мод.окно ред.профиля отображение текста
-profilePopupEdit()
+fillProfilePopupEdit()
 
 //вызов мод.окон(ред.проф)
-openModal(popupEdit, btnEditOpen)
-closeModal(popupEdit)
+btnEditOpen.addEventListener('click', () => openModal(popupEdit))
 
 //вызов мод. окон(добавление карточки)
-openModal(popupNewCard, btnOpenNewCard)
-closeModal(popupNewCard)
+btnOpenNewCard.addEventListener('click', () => openModal(popupNewCard))
 
 //Обработчики мод.окон
 editFormSubmit()

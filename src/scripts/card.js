@@ -1,8 +1,8 @@
-import { openModalImg, closeModal } from './modal.js'
+import { openModal } from './modal.js'
 
 // @todo: Функция создания карточки
 
-const createCard = (cardData, deleteCard, putLike) => {
+const createCard = (cardData, deleteCard, putLike, openModal) => {
 	const cardTemplate = document.querySelector('#card-template').content
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true)
 	const resetButton = cardElement.querySelector('.card__delete-button')
@@ -14,16 +14,20 @@ const createCard = (cardData, deleteCard, putLike) => {
 	cardImg.alt = cardData.name
 	cardElement.querySelector('.card__title').textContent = cardData.name
 
-	const popupImg = document.querySelector('.popup_type_image')
+	const modalImg = document.querySelector('.popup_type_image')
+	const imgPopup = modalImg.querySelector('.popup__image')
+	const popupCaption = modalImg.querySelector('.popup__caption')
 
-	openModalImg({
-		popupImg: popupImg,
-		openButton: cardImg,
-	})
+	const openModalImg = evt => {
+		const img = evt.target
+		imgPopup.src = img.src
+		imgPopup.alt = popupCaption.textContent = img.alt
+		openModal(modalImg)
+	}
 
-	closeModal(popupImg)
+	cardImg.addEventListener('click', openModalImg)
 
-	putLike(likeButton)
+	likeButton.addEventListener('click', () => putLike(likeButton))
 
 	resetButton.addEventListener('click', () => deleteCard(cardElement))
 
@@ -38,10 +42,8 @@ const deleteCard = cardElement => {
 
 // Функция проставления лайков
 
-const putLike = likes => {
-	likes.addEventListener('click', evt => {
-		evt.target.classList.toggle('card__like-button_is-active')
-	})
+const putLike = like => {
+	like.classList.toggle('card__like-button_is-active')
 }
 
 export { putLike, deleteCard, createCard }
