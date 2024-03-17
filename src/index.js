@@ -20,16 +20,30 @@ const btnEditOpen = document.querySelector('.profile__edit-button')
 const popupNewCard = document.querySelector('.popup_type_new-card')
 const btnOpenNewCard = document.querySelector('.profile__add-button')
 
+//Обработчик открытия картинок
+const modalImg = document.querySelector('.popup_type_image')
+const imgPopup = modalImg.querySelector('.popup__image')
+const popupCaption = modalImg.querySelector('.popup__caption')
+
+const openModalImg = evt => {
+	const img = evt.target
+	imgPopup.src = img.src
+	imgPopup.alt = popupCaption.textContent = img.alt
+	openModal(modalImg)
+}
+
 // @todo: Вывести карточки на страницу
 initialCards.forEach(cardData => {
-	const cards = createCard(cardData, deleteCard, putLike, openModal)
+	const cards = createCard(cardData, deleteCard, putLike, openModalImg)
 	containerList.append(cards)
 })
-// Мод.окно ред.профиля отображение текста
-fillProfilePopupEdit()
 
 //вызов мод.окон(ред.проф)
-btnEditOpen.addEventListener('click', () => openModal(popupEdit))
+btnEditOpen.addEventListener(
+	'click',
+	() => openModal(popupEdit),
+	fillProfilePopupEdit()
+)
 
 //вызов мод. окон(добавление карточки)
 btnOpenNewCard.addEventListener('click', () => openModal(popupNewCard))
@@ -38,4 +52,4 @@ btnOpenNewCard.addEventListener('click', () => openModal(popupNewCard))
 editFormSubmit()
 addCardFormeSubmit()
 
-export { containerList, popupNewCard, popupEdit }
+export { containerList, popupNewCard, popupEdit, openModalImg }

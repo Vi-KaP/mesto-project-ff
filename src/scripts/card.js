@@ -1,8 +1,6 @@
-import { openModal } from './modal.js'
-
 // @todo: Функция создания карточки
 
-const createCard = (cardData, deleteCard, putLike, openModal) => {
+const createCard = (cardData, deleteCard, putLike, openModalImg) => {
 	const cardTemplate = document.querySelector('#card-template').content
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true)
 	const resetButton = cardElement.querySelector('.card__delete-button')
@@ -13,17 +11,6 @@ const createCard = (cardData, deleteCard, putLike, openModal) => {
 	cardImg.src = cardData.link
 	cardImg.alt = cardData.name
 	cardElement.querySelector('.card__title').textContent = cardData.name
-
-	const modalImg = document.querySelector('.popup_type_image')
-	const imgPopup = modalImg.querySelector('.popup__image')
-	const popupCaption = modalImg.querySelector('.popup__caption')
-
-	const openModalImg = evt => {
-		const img = evt.target
-		imgPopup.src = img.src
-		imgPopup.alt = popupCaption.textContent = img.alt
-		openModal(modalImg)
-	}
 
 	cardImg.addEventListener('click', openModalImg)
 

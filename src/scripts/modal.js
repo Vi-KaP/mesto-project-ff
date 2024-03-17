@@ -1,5 +1,3 @@
-
-
 const openModal = popup => {
 	popup.classList.add('popup_is-opened')
 	popup.addEventListener('click', closePopupByClick)
@@ -9,6 +7,8 @@ const openModal = popup => {
 
 const closeModal = popup => {
 	popup.classList.remove('popup_is-opened')
+	popup.removeEventListener('click', closePopupByClick)
+	document.removeEventListener('keydown', closePopupByEsc)
 }
 
 const closePopupByClick = evt => {

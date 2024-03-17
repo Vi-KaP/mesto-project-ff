@@ -1,6 +1,11 @@
 import { createCard, deleteCard, putLike } from './card'
-import { closeModal, openModal } from './modal'
-import { containerList, popupNewCard, popupEdit } from '../index.js'
+import { closeModal } from './modal'
+import {
+	containerList,
+	popupNewCard,
+	popupEdit,
+	openModalImg,
+} from '../index.js'
 
 const cardForm = document.forms['new-place']
 const nameCardInput = document.querySelector('.popup__input_type_card-name')
@@ -25,7 +30,7 @@ const handleAddCardForm = evt => {
 		},
 		deleteCard,
 		putLike,
-		openModal
+		openModalImg
 	)
 
 	containerList.prepend(addCard)
