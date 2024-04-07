@@ -59,7 +59,9 @@ enableValidation()
 
 //вызов мод. окон(добавление карточки)
 btnOpenNewCard.addEventListener('click', () => {
-	cardForm.reset(), clearValidation(), openModal(popupNewCard)
+	clearValidation(), 
+	cardForm.reset(), 
+	openModal(popupNewCard)
 })
 
 const displayCard = (cards, userId) => {

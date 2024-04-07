@@ -1,10 +1,16 @@
-//Валидация формы
-const buttonElement = document.querySelector('.popup__button')
-const inputList = Array.from(document.querySelectorAll('.popup__input'))
+
+const validationConfig = {
+	formSelector: '.popup__form',
+	inputSelector: '.popup__input',
+	submitButtonSelector: '.popup__button',
+	inactiveButtonClass: 'popup__button_disabled',
+	inputErrorClass: 'popup__input_type_error',
+}
+
 // Ошибка
 const showInputError = (formElement, inputElement, errorMessage) => {
 	const errorElement = formElement.querySelector(`.${inputElement.id}-error`)
-	inputElement.classList.add('popup__input_type_error')
+	inputElement.classList.add(validationConfig.inputErrorClass)
 
 	errorElement.textContent = errorMessage
 	errorElement.classList.add('popup__input-error_active')
@@ -12,7 +18,7 @@ const showInputError = (formElement, inputElement, errorMessage) => {
 //Скрытие ошибки
 const hideInputError = (formElement, inputElement) => {
 	const errorElement = formElement.querySelector(`.${inputElement.id}-error`)
-	inputElement.classList.remove('popup__input_type_error')
+	inputElement.classList.remove(validationConfig.inputErrorClass)
 	errorElement.classList.remove('popup__input-error_active')
 	errorElement.textContent = ''
 }
@@ -38,17 +44,19 @@ const hasInvalidInput = inputList => {
 //Функция блокировки/разбл. кнопки
 const toggleButtonState = (inputList, buttonElement) => {
 	if (hasInvalidInput(inputList)) {
-		buttonElement.classList.add('popup__button_disabled')
+		buttonElement.classList.add(validationConfig.inactiveButtonClass)
 	} else {
-		buttonElement.classList.remove('popup__button_disabled')
+		buttonElement.classList.remove(validationConfig.inactiveButtonClass)
 	}
 }
 
 const setEventListeners = formElement => {
-	const inputList = Array.from(formElement.querySelectorAll('.popup__input'))
-
-	// const buttonElement = formElement.querySelector('.popup__button')
-
+	const inputList = Array.from(
+		formElement.querySelectorAll(validationConfig.inputSelector)
+	)
+	const buttonElement = formElement.querySelector(
+		validationConfig.submitButtonSelector
+	)
 	toggleButtonState(inputList, buttonElement)
 
 	inputList.forEach(inputElement => {
@@ -61,34 +69,34 @@ const setEventListeners = formElement => {
 
 //Включение проверки
 const enableValidation = () => {
-	const formList = Array.from(document.querySelectorAll('.popup__form'))
+	const formList = Array.from(
+		document.querySelectorAll(validationConfig.formSelector)
+	)
 
 	formList.forEach(formElement => {
 		formElement.addEventListener('submit', evt => {
 			evt.preventDefault()
-			buttonElement.textContent = 'Сохранение...'
+
+			// buttonElement.textContent = 'Сохранение...'
 		})
 		setEventListeners(formElement)
 	})
 }
 
-const clearValidation = () => {
-	buttonElement.textContent = 'Сохранить'
-	
+const clearValidation = validationConfig => {
+	// buttonElement.textContent = 'Сохранить'
+
 	const inputListError = Array.from(
 		document.querySelectorAll('.popup__input-error')
 	)
-	
-
-	toggleButtonState(inputList, buttonElement)
-	
+	// toggleButtonState(inputList, buttonElement)
 
 	inputListError.forEach(errorElement => {
 		errorElement.innerText = ''
 	})
-	inputList.forEach(inputError =>
-		inputError.classList.remove('popup__input_type_error')
-	)
+	// inputList.forEach(inputError =>
+	// 	inputError.classList.remove(validationConfig.inputErrorClass)
+	// )
 }
 
 export { enableValidation, clearValidation }
