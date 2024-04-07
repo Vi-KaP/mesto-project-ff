@@ -1,20 +1,42 @@
-import { createCard, deleteCard, putLike } from './card'
+import { createCard } from './card'
 import { closeModal } from './modal'
 import {
 	containerList,
 	popupNewCard,
 	popupEdit,
-	openModalImg,
-} from '../index.js'
+	popupAvatar,
 
-const cardForm = document.forms['new-place']
+} from '../index.js'
+import { createNewCard, editProfile, 
+	editAvatar 
+} from './api.js'
+
 const nameCardInput = document.querySelector('.popup__input_type_card-name')
 const linkCardInput = document.querySelector('.popup__input_type_url')
-const editForm = document.forms['edit-profile']
 const nameInput = document.querySelector('.popup__input_type_name')
 const jobInput = document.querySelector('.popup__input_type_description')
 const profileName = document.querySelector('.profile__title')
 const profileJob = document.querySelector('.profile__description')
+const avatarInput = document.querySelector('.popup__input_type_url_avatar')
+const avatarImage = document.querySelector('.profile__image-avatar')
+
+const displayProfile = profileInfo => {
+	profileName.textContent = profileInfo.name
+	profileJob.textContent = profileInfo.about
+}
+
+const showAvatar = avatar => {
+	avatarImage.src = avatar.avatar
+}
+
+const handleAvatarForm = evt => {
+	evt.preventDefault()
+	const valueAvatarInput = avatarInput.value
+	editAvatar(valueAvatarInput).then(avatar=> {
+	avatarImage.src = avatar.avatar
+	})
+  	closeModal(popupAvatar)
+}
 
 // Добавить карточку
 const handleAddCardForm = evt => {
@@ -23,24 +45,18 @@ const handleAddCardForm = evt => {
 	const valueNameCard = nameCardInput.value
 	const valueLinkCard = linkCardInput.value
 
-	const addCard = createCard(
-		{
+		createNewCard({
 			name: valueNameCard,
 			link: valueLinkCard,
-		},
-		deleteCard,
-		putLike,
-		openModalImg
-	)
+		})
+			.then(cardData => {
+				containerList.prepend(createCard(cardData))
+			})
+			.catch(res => {
+				throw new Error(`Ошибка: ${res.status}`)
+			})
 
-	containerList.prepend(addCard)
-
-	cardForm.reset()
 	closeModal(popupNewCard)
-}
-
-const addCardFormeSubmit = () => {
-	cardForm.addEventListener('submit', handleAddCardForm)
 }
 
 // Обработчик «отправки» формы
@@ -51,19 +67,32 @@ const handleEditForm = evt => {
 	const valueName = nameInput.value
 	const valueJob = jobInput.value
 
-	profileName.textContent = valueName
-	profileJob.textContent = valueJob
+	editProfile({
+		name: valueName,
+		about: valueJob,
+	})
+		.then(profileInfo => {
+			profileName.textContent = profileInfo.name
+			profileJob.textContent = profileInfo.about
+		})
+		.catch(res => {
+			throw new Error(`Ошибка: ${res.status}`)
+		})
 
 	closeModal(popupEdit)
 }
-const editFormSubmit = () => {
-	editForm.addEventListener('submit', handleEditForm)
-}
 
-// Мод.окно ред.профиля отображение текста
+// // Мод.окно ред.профиля отображение текста
 const fillProfilePopupEdit = () => {
 	nameInput.value = profileName.textContent
 	jobInput.value = profileJob.textContent
 }
 
-export { addCardFormeSubmit, editFormSubmit, fillProfilePopupEdit }
+export {
+	handleEditForm,
+	handleAddCardForm,
+	handleAvatarForm,
+	fillProfilePopupEdit,
+	displayProfile,
+	showAvatar
+}

@@ -1,22 +1,54 @@
+import { deleteCardsApi, putLike, deleteLike } from './api'
+
 // @todo: Функция создания карточки
 
-const createCard = (cardData, deleteCard, putLike, openModalImg) => {
+const createCard = (
+	cardData,
+	userId,
+	deleteCard,
+	performActionLike,
+	openModalImg
+) => {
 	const cardTemplate = document.querySelector('#card-template').content
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true)
 	const resetButton = cardElement.querySelector('.card__delete-button')
-	const likeButton = cardElement.querySelector('.card__like-button')
+	const cardContainerBtnLike = cardElement.querySelector(
+		'.card__container-like'
+	)
+	const likeButton = cardContainerBtnLike.querySelector('.card__like-button')
+	const likeBtnActive = 'card__like-button_is-active'
+	const quantityLike = cardContainerBtnLike.querySelector(
+		'.card__quantity-like'
+	)
 
 	const cardImg = cardElement.querySelector('.card__image')
 
 	cardImg.src = cardData.link
 	cardImg.alt = cardData.name
+
 	cardElement.querySelector('.card__title').textContent = cardData.name
 
 	cardImg.addEventListener('click', openModalImg)
+	// console.log(likeButton.classList);
+	likeButton.addEventListener('click', () => {
+		performActionLike(likeButton, cardData, likeBtnActive)
+	})
 
-	likeButton.addEventListener('click', () => putLike(likeButton))
+	if (userId === cardData.owner._id) {
+		resetButton.addEventListener('click', () => {
+			deleteCard(cardElement), deleteCardsApi(cardData._id)
+		})
+	} else {
+		resetButton.remove()
+	}
 
-	resetButton.addEventListener('click', () => deleteCard(cardElement))
+	const likeId = cardData.likes
+	likeId.forEach(likeElement => {
+		if (userId === likeElement._id) {
+			likeButton.classList.add(likeBtnActive)
+		}
+	})
+	createNumberLike(quantityLike, cardData.likes)
 
 	return cardElement
 }
@@ -29,8 +61,23 @@ const deleteCard = cardElement => {
 
 // Функция проставления лайков
 
-const putLike = like => {
-	like.classList.toggle('card__like-button_is-active')
+const performActionLike = (like, cardId, btnActive) => {
+	if (like.classList.contains(btnActive)) {
+		deleteLike(cardId._id)
+		like.classList.remove(btnActive)
+	} else {
+		putLike(cardId._id)
+		like.classList.add(btnActive)
+	}
 }
 
-export { putLike, deleteCard, createCard }
+const createNumberLike = (quantity, cardData) => {
+	if (cardData.length >= 1) {
+		quantity.classList.add(`card__quantity-like_active`)
+		quantity.textContent = `${cardData.length}`
+	} else {
+		quantity.classList.remove(`card__quantity-like_active`)
+	}
+}
+
+export { performActionLike, deleteCard, createCard }
