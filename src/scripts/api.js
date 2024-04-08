@@ -46,15 +46,15 @@ const editProfile = profileInfo => {
 	}).then(handleRequest)
 }
 
-const displayProfileInfo = () => {
-	return fetch(`${address}/users/me`, {
-		headers: {
-			authorization: token,
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(),
-	}).then(handleRequest)
-}
+// const displayProfileInfo = () => {
+// 	return fetch(`${address}/users/me`, {
+// 		headers: {
+// 			authorization: token,
+// 			'Content-Type': 'application/json',
+// 		},
+// 		body: JSON.stringify(),
+// 	}).then(handleRequest)
+// }
 
 const editAvatar = avatar => {
 	return fetch(`${address}/users/me/avatar`, {
@@ -69,7 +69,6 @@ const editAvatar = avatar => {
 	}).then(handleRequest)
 }
 
-
 const deleteCardsApi = cardDataId => {
 	return fetch(`${address}/cards/${cardDataId}`, {
 		method: 'DELETE',
@@ -80,30 +79,28 @@ const deleteCardsApi = cardDataId => {
 }
 
 const putLike = cardId => {
-	fetch(`${address}/cards/likes/${cardId}`, {
+	return fetch(`${address}/cards/likes/${cardId}`, {
 		method: 'PUT',
 		headers: {
 			authorization: token,
 		},
-	})
+	}).then(handleRequest)
 }
 
-const deleteLike = (cardId) => {
-	fetch(`${address}/cards/likes/${cardId}`, {
+const deleteLike = cardId => {
+	return fetch(`${address}/cards/likes/${cardId}`, {
 		method: 'DELETE',
 		headers: {
 			authorization: token,
 		},
-	})
+	}).then(handleRequest)
 }
-
 
 export {
 	getData,
 	createNewCard,
 	editProfile,
 	deleteCardsApi,
-	displayProfileInfo,
 	getUserData,
 	putLike,
 	deleteLike,

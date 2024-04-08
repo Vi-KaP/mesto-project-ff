@@ -5,7 +5,7 @@ import { deleteCardsApi, putLike, deleteLike } from './api'
 const createCard = (
 	cardData,
 	userId,
-	deleteCard,
+	deleteCallback,
 	performActionLike,
 	openModalImg
 ) => {
@@ -29,25 +29,22 @@ const createCard = (
 	cardElement.querySelector('.card__title').textContent = cardData.name
 
 	cardImg.addEventListener('click', openModalImg)
-	// console.log(likeButton.classList);
 	likeButton.addEventListener('click', () => {
 		performActionLike(likeButton, cardData, likeBtnActive)
 	})
 
 	if (userId === cardData.owner._id) {
 		resetButton.addEventListener('click', () => {
-			deleteCard(cardElement), deleteCardsApi(cardData._id)
+			deleteCallback(cardData._id, cardElement)
 		})
 	} else {
 		resetButton.remove()
 	}
 
-	const likeId = cardData.likes
-	likeId.forEach(likeElement => {
-		if (userId === likeElement._id) {
-			likeButton.classList.add(likeBtnActive)
-		}
-	})
+	if (cardData.likes.some(likeElement => likeElement._id === userId)) {
+		likeButton.classList.add(likeBtnActive)
+	}
+
 	createNumberLike(quantityLike, cardData.likes)
 
 	return cardElement
@@ -59,25 +56,36 @@ const deleteCard = cardElement => {
 	cardElement.remove()
 }
 
+const deleteCallback = (cardId, cardElement) => {
+	deleteCardsApi(cardId)
+		.then(() => deleteCard(cardElement))
+		.catch(res => {
+			throw new Error(`Ошибка: ${res.status}`)
+		})
+}
+
 // Функция проставления лайков
 
-const performActionLike = (like, cardId, btnActive) => {
-	if (like.classList.contains(btnActive)) {
-		deleteLike(cardId._id)
-		like.classList.remove(btnActive)
-	} else {
-		putLike(cardId._id)
-		like.classList.add(btnActive)
-	}
+const performActionLike = (like, cardData, btnActive) => {
+	const likeMethod = like.classList.contains(btnActive) ? deleteLike : putLike
+
+	likeMethod(cardData._id)
+		.then(res => {
+			quantityLike.textContent = res.likes.length
+			like.classList.toggle(btnActive)
+		})
+		.catch(res => {
+			throw new Error(`Ошибка: ${res.status}`)
+		})
 }
 
 const createNumberLike = (quantity, cardData) => {
 	if (cardData.length >= 1) {
 		quantity.classList.add(`card__quantity-like_active`)
-		quantity.textContent = `${cardData.length}`
+		quantity.textContent = cardData.length
 	} else {
 		quantity.classList.remove(`card__quantity-like_active`)
 	}
 }
 
-export { performActionLike, deleteCard, createCard }
+export { performActionLike, deleteCallback, createCard }

@@ -1,15 +1,13 @@
-import { createCard } from './card'
+import { createCard, deleteCallback, performActionLike } from './card'
 import { closeModal } from './modal'
 import {
 	containerList,
 	popupNewCard,
 	popupEdit,
 	popupAvatar,
-
+	openModalImg,
 } from '../index.js'
-import { createNewCard, editProfile, 
-	editAvatar 
-} from './api.js'
+import { createNewCard, editProfile, editAvatar } from './api.js'
 
 const nameCardInput = document.querySelector('.popup__input_type_card-name')
 const linkCardInput = document.querySelector('.popup__input_type_url')
@@ -32,10 +30,14 @@ const showAvatar = avatar => {
 const handleAvatarForm = evt => {
 	evt.preventDefault()
 	const valueAvatarInput = avatarInput.value
-	editAvatar(valueAvatarInput).then(avatar=> {
-	avatarImage.src = avatar.avatar
-	})
-  	closeModal(popupAvatar)
+	editAvatar(valueAvatarInput)
+		.then(avatar => {
+			avatarImage.src = avatar.avatar
+		})
+		.catch(res => {
+			throw new Error(`Ошибка: ${res.status}`)
+		})
+	closeModal(popupAvatar)
 }
 
 // Добавить карточку
@@ -45,17 +47,26 @@ const handleAddCardForm = evt => {
 	const valueNameCard = nameCardInput.value
 	const valueLinkCard = linkCardInput.value
 
-		createNewCard({
-			name: valueNameCard,
-			link: valueLinkCard,
+	createNewCard({
+		name: valueNameCard,
+		link: valueLinkCard,
+	})
+		.then(cardData => {
+			containerList.prepend(
+				createCard(
+					cardData,
+					cardData.owner._id,
+					deleteCallback,
+					performActionLike,
+					openModalImg
+				)
+			)
 		})
-			.then(cardData => {
-				containerList.prepend(createCard(cardData))
-			})
-			.catch(res => {
-				throw new Error(`Ошибка: ${res.status}`)
-			})
 
+		.catch(res => {
+			throw new Error(`Ошибка: ${res.status}`)
+		})
+  
 	closeModal(popupNewCard)
 }
 
@@ -72,8 +83,7 @@ const handleEditForm = evt => {
 		about: valueJob,
 	})
 		.then(profileInfo => {
-			profileName.textContent = profileInfo.name
-			profileJob.textContent = profileInfo.about
+			displayProfile(profileInfo)
 		})
 		.catch(res => {
 			throw new Error(`Ошибка: ${res.status}`)
@@ -94,5 +104,5 @@ export {
 	handleAvatarForm,
 	fillProfilePopupEdit,
 	displayProfile,
-	showAvatar
+	showAvatar,
 }

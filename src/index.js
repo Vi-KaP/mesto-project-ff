@@ -1,6 +1,10 @@
 import './pages/index.css'
 import { openModal } from './scripts/modal.js'
-import { createCard, deleteCard, performActionLike } from './scripts/card.js'
+import {
+	createCard,
+	deleteCallback,
+	performActionLike,
+} from './scripts/card.js'
 import {
 	handleAddCardForm,
 	handleEditForm,
@@ -10,7 +14,7 @@ import {
 	showAvatar,
 } from './scripts/handler.js'
 import { enableValidation, clearValidation } from './scripts/validation.js'
-import { getData, displayProfileInfo, getUserData } from './scripts/api.js'
+import { getData, getUserData } from './scripts/api.js'
 // @todo: DOM узлы
 const containerList = document.querySelector('.places__list')
 
@@ -43,33 +47,44 @@ const openModalImg = evt => {
 const btnAvatar = document.querySelector('.profile__image')
 const popupAvatar = document.querySelector('.popup_type_avatar')
 
+const validationConfig = {
+	formSelector: '.popup__form',
+	inputSelector: '.popup__input',
+	submitButtonSelector: '.popup__button',
+	inactiveButtonClass: 'popup__button_disabled',
+	inputErrorClass: 'popup__input_type_error',
+	displayError: 'popup__input-error_active',
+}
+
 btnAvatar.addEventListener('click', () => {
-	avatarForm.reset(), clearValidation(), openModal(popupAvatar)
+	avatarForm.reset(),
+		clearValidation(avatarForm, validationConfig),
+		openModal(popupAvatar)
 })
 
 //вызов мод.окон(ред.проф)
 btnEditOpen.addEventListener('click', () => {
-	clearValidation()
+	clearValidation(editForm, validationConfig)
 	openModal(popupEdit)
 	fillProfilePopupEdit()
 })
 
-//Включение проверки
-enableValidation()
-
 //вызов мод. окон(добавление карточки)
 btnOpenNewCard.addEventListener('click', () => {
-	clearValidation(), 
-	cardForm.reset(), 
-	openModal(popupNewCard)
+	cardForm.reset(),
+		clearValidation(cardForm, validationConfig),
+		openModal(popupNewCard)
 })
+
+//Включение проверки
+enableValidation(validationConfig)
 
 const displayCard = (cards, userId) => {
 	cards.forEach(cardData => {
 		const cards = createCard(
 			cardData,
 			userId,
-			deleteCard,
+			deleteCallback,
 			performActionLike,
 			openModalImg
 		)
@@ -77,17 +92,12 @@ const displayCard = (cards, userId) => {
 	})
 }
 
-Promise.all([getData(), getUserData()]).then(([cards, user]) => {
-	const userId = user._id
-	displayCard(cards, userId)
-}).catch(res => {
-	throw new Error(`Ошибка: ${res.status}`)
-})
-
-displayProfileInfo()
-	.then(profileInfo => {
-		displayProfile(profileInfo)
-		showAvatar(profileInfo)
+Promise.all([getData(), getUserData()])
+	.then(([cards, user]) => {
+		const userId = user._id
+		displayCard(cards, userId)
+		displayProfile(user)
+		showAvatar(user)
 	})
 	.catch(res => {
 		throw new Error(`Ошибка: ${res.status}`)
