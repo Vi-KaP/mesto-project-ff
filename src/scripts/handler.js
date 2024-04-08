@@ -62,11 +62,10 @@ const handleAddCardForm = evt => {
 				)
 			)
 		})
-
 		.catch(res => {
 			throw new Error(`Ошибка: ${res.status}`)
 		})
-  
+
 	closeModal(popupNewCard)
 }
 

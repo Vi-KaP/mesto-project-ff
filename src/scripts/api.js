@@ -46,16 +46,6 @@ const editProfile = profileInfo => {
 	}).then(handleRequest)
 }
 
-// const displayProfileInfo = () => {
-// 	return fetch(`${address}/users/me`, {
-// 		headers: {
-// 			authorization: token,
-// 			'Content-Type': 'application/json',
-// 		},
-// 		body: JSON.stringify(),
-// 	}).then(handleRequest)
-// }
-
 const editAvatar = avatar => {
 	return fetch(`${address}/users/me/avatar`, {
 		method: 'PATCH',
