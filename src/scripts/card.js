@@ -30,7 +30,8 @@ const createCard = (
 
 	cardImg.addEventListener('click', openModalImg)
 	likeButton.addEventListener('click', () => {
-		performActionLike(likeButton, cardData, likeBtnActive)
+	
+		performActionLike(likeButton, cardData, likeBtnActive, quantityLike)
 	})
 
 	if (userId === cardData.owner._id) {
@@ -66,7 +67,8 @@ const deleteCallback = (cardId, cardElement) => {
 
 // Функция проставления лайков
 
-const performActionLike = (like, cardData, btnActive) => {
+const performActionLike = (like, cardData, btnActive, quantityLike) => {
+	
 	const likeMethod = like.classList.contains(btnActive) ? deleteLike : putLike
 
 	likeMethod(cardData._id)
